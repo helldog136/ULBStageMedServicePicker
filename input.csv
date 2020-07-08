@@ -1,0 +1,10 @@
+Student,Service1,Service2,Service3,Service4,Service5,Service6
+Places,1,2,2,1,2,1
+StA,1,2,3,4,5,
+StB,,2,1,4,5,3
+StC,,1,3,5,4,2
+StD,1,,3,5,4,2
+StE,1,,5,3,4,2
+StF,5,1,,4,3,2
+StG,,5,1,3,4,2
+StH,1,5,,3,4,2
