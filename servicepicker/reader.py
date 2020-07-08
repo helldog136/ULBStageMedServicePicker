@@ -1,4 +1,4 @@
-from filereader.problem import Problem, getStrongConstraints, getWeakConstraints
+from servicepicker.problem import Problem, getStrongConstraints, getWeakConstraints
 
 
 def parse(filename):

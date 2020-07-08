@@ -1,4 +1,4 @@
-from filereader.problem.constraint import *
+from servicepicker.problem.constraint import *
 
 ##########
 # constraint:AccountPreferences

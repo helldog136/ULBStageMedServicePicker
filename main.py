@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import sys
-import filereader.problem.constraint as constraint
+import servicepicker.problem.constraint as constraint
 import os
 
 
@@ -21,7 +21,7 @@ def check_args(args): #TODO
 
 if __name__ == "__main__":
     from optimizer import scip
-    from filereader import reader
+    from servicepicker import reader
     importMods()
     args = sys.argv
     if(len(args) > 1):
