@@ -141,19 +141,19 @@ class Problem(object):
         for i in range(len(self.X)):
             for j in range(len(self.X[i])):
                 if self.X[i][j] == 1:
-                    res += f"{self.S[i]} va à {self.L[j]}. Il y avait mis une préférence de {self.P[i][j]}\n"
+                    res += f"{self.S[i]} va à {self.L[j]}. "
+                    res += f"Il y avait mis une préférence de {self.P[i][j]}\n" if self.P[i][j] != "" else "Ce n'était pas une de ses préférences... Désolé...\n"
         return res
 
-    def getSolutionAsJson(self):
-        res = {}
-        res["slots"] = []
-        for i in range(len(self.X)):
-            for j in range(len(self.X[i])):
-                if self.X[i][j] == 1:
-                    slot = {"student": self.S[i],
-                            "Service": self.L[j],
-                            "Preference": self.P[i][j]
-                            }
-                    res["slots"].append(slot)
-        print(res)
+    def getSolutionAsCSV(self):
+        res = "Students\\Services,"
+        res += ",".join(self.L)
+        res += "\n"
+        for i, s in enumerate(self.S):
+            res += s + ","
+            for j, xij in enumerate(self.X[i]):
+                if xij != 0:
+                    res += self.P[i][j] if self.P[i][j] != "" else str(len(self.L))
+                res += ","
+            res = res[:-1] + "\n"
         return res

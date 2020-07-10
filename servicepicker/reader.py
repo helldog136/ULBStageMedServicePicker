@@ -26,6 +26,7 @@ def parse(filename):
     print(max_places)
     print(students)
     print(student_preferences)
+    print(f"Creating problem with {len(students)} Students with {sum(max_places)} places.")
     return Problem(services, max_places, students, student_preferences, getStrongConstraints(), getWeakConstraints())
 
 if __name__ == "__main__":

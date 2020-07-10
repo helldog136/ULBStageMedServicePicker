@@ -40,4 +40,6 @@ if __name__ == "__main__":
         problem.displaySolution()
         with open(f"{args[1].split('.')[0]}_out.txt", 'w', encoding='utf-8') as outfile:
             outfile.write(problem.getSolutionAsStr())
+        with open(f"{args[1].split('.')[0]}_out.csv", 'w', encoding='utf-8') as outfile:
+            outfile.write(problem.getSolutionAsCSV())
 
