@@ -36,3 +36,8 @@ The rest is magic from SCIP.
 
 SCIP will find the optimal value for each X_i_j (1 or 0). 
 This result is then interpreted to give the final affectation.
+
+## Future improvements?
+Migrate from SCIP (needing external installs) to https://pypi.org/project/lpsolvers/
+
+Add neat graphical interface (Angular?)
