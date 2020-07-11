@@ -142,7 +142,7 @@ class Problem(object):
             for j in range(len(self.X[i])):
                 if self.X[i][j] == 1:
                     res += f"{self.S[i]} va à {self.L[j]}. "
-                    res += f"Il y avait mis une préférence de {self.P[i][j]}\n" if self.P[i][j] != "" else "Ce n'était pas une de ses préférences... Désolé...\n"
+                    res += f"Il/Elle y avait mis une préférence de {self.P[i][j]}\n" if self.P[i][j] != "" else "Ce n'était pas une de ses préférences... Désolé...\n"
         return res
 
     def getSolutionAsCSV(self):
