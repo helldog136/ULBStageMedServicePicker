@@ -1,3 +1,5 @@
+import math
+
 from servicepicker.problem.constraint import *
 
 ##########
@@ -17,11 +19,14 @@ class AccountPreferences(WeakConstraint):
         return 10
 
     def computeConstraint(self, problem):
-        for i in range(len(problem.S)):
-            for j in range(len(problem.P[i])):
-                weight = problem.P[i][j]
+        for i in range(len(problem.Students)):
+            for j in range(len(problem.Preferences[i])):
+                weight = problem.Preferences[i][j]
                 if weight == "":
-                    weight = str(len(problem.L))
-                weight = len(problem.L) - int(weight)
-                self.addTerm(-(weight), problem.prettyPrintVar("x", i, j))
+                    weight = str(len(problem.Locations))
+                if weight != "X":
+                    weight = len(problem.Locations) - int(weight)
+                    if problem.Old_Affectations:
+                        weight = math.floor(weight * (1+problem.Old_Affectations[i]))
+                    self.addTerm(-(weight), problem.prettyPrintVar("x", i, j))
 

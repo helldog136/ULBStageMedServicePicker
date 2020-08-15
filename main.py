@@ -29,8 +29,12 @@ if __name__ == "__main__":
         print("Starting in console mode...")
         args = check_args(args)
         ext = "." + args[1].split(".")[-1]
+        old = False
 
-        problem = reader.parse(args[1])
+        if len(args) > 2 and args[2] == "True":
+            problem = reader.parse_with_old_result(args[1])
+        else:
+            problem = reader.parse(args[1])
 
         if problem is None:
             print("Unknown file format:", args[1].split(".")[-1])

@@ -1,8 +1,8 @@
-StA va à Service2. Il y avait mis une préférence de 2
-StB va à Service3. Il y avait mis une préférence de 1
-StC va à Service2. Il y avait mis une préférence de 1
-StD va à Service1. Il y avait mis une préférence de 1
-StE va à Service4. Il y avait mis une préférence de 3
-StF va à Service5. Il y avait mis une préférence de 3
-StG va à Service3. Il y avait mis une préférence de 1
-StH va à Service6. Il y avait mis une préférence de 2
+StA va à Service2. Il/Elle y avait mis une préférence de 2 
+StB va à Service3. Il/Elle y avait mis une préférence de 1 
+StC va à Service2. Il/Elle y avait mis une préférence de 1 
+StD va à Service1. Il/Elle y avait mis une préférence de 1 
+StE va à Service4. Il/Elle y avait mis une préférence de 3 
+StF va à Service5. Il/Elle y avait mis une préférence de 3 
+StG va à Service3. Il/Elle y avait mis une préférence de 1 
+StH va à Service6. Il/Elle y avait mis une préférence de 2 
