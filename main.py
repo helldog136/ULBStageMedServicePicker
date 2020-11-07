@@ -1,49 +1,29 @@
 #!/usr/bin/env python3
 import sys
-import servicepicker.problem.constraint as constraint
+import servicepicker.model.constraint as constraint
 import os
 
-
-def importMods():
-    #clear old imports
-    constraint.clearConstraints()
-    # Import mods
-    for module in os.listdir("mods"):
-        if module == '__init__.py' or module[-3:] != '.py':
-            continue
-        __import__("mods", locals(), globals(), [module[:-3]])
-    del module
-
-
-def check_args(args): #TODO
-    return args
-
+from servicepicker.model.serviceAffectationProblem.location import Location
+from servicepicker.model.serviceAffectationProblem.serviceAffectationProblem import ServiceAffectationProblem
+from servicepicker.model.serviceAffectationProblem.student import Student
+from servicepicker.model.solver import Solver
 
 if __name__ == "__main__":
-    from optimizer import scip
-    from servicepicker import reader
-    importMods()
-    args = sys.argv
-    if(len(args) > 1):
-        # console mode
-        print("Starting in console mode...")
-        args = check_args(args)
-        ext = "." + args[1].split(".")[-1]
-        old = False
+    studs = []
+    studs.append(Student(0, "John Doe", {0: 1, 1: 4, 2: 2, 3: 3}, priority=0.75))
+    studs.append(Student(1, "Jane Doe", {0: 4, 1: 2, 2: 1, 3: 3}))
+    studs.append(Student(2, "Jon Done", {0: 2, 1: 3, 2: 4, 3: 1}, vetos=[2], priority=1.5))
 
-        if len(args) > 2 and args[2] == "True":
-            problem = reader.parse_with_old_result(args[1])
-        else:
-            problem = reader.parse(args[1])
+    locs = []
+    locs.append(Location(0, "A", 0, 2))
+    locs.append(Location(1, "B", 1, 2))
+    locs.append(Location(2, "C", 1, 1))
+    locs.append(Location(3, "D", 0, 1))
 
-        if problem is None:
-            print("Unknown file format:", args[1].split(".")[-1])
-            sys.exit(-1)
+    problem = ServiceAffectationProblem(locs, studs)
 
-        res = scip.solve(problem)
-        problem.displaySolution()
-        with open(f"{args[1].split('.')[0]}_out.txt", 'w', encoding='utf-8') as outfile:
-            outfile.write(problem.getSolutionAsStr())
-        with open(f"{args[1].split('.')[0]}_out.csv", 'w', encoding='utf-8') as outfile:
-            outfile.write(problem.getSolutionAsCSV())
+    solver = Solver()
 
+    solver.solve(problem)
+
+    print(problem.solution)

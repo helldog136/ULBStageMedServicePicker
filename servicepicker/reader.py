@@ -1,4 +1,4 @@
-from servicepicker.problem import Problem, getStrongConstraints, getWeakConstraints
+from servicepicker.model import ServiceAffectationProblem, getStrongConstraints, getWeakConstraints
 
 
 def parse(filename):
@@ -27,7 +27,7 @@ def parse(filename):
     print(students)
     print(student_preferences)
     print(f"Creating problem with {len(students)} Students with {sum(max_places)} places.")
-    return Problem(services, max_places, students, student_preferences, getStrongConstraints(), getWeakConstraints())
+    return ServiceAffectationProblem(services, max_places, students, student_preferences, getStrongConstraints(), getWeakConstraints())
 
 def parse_with_old_result(filename):
     services = []
@@ -60,7 +60,7 @@ def parse_with_old_result(filename):
     print(student_preferences)
     print(old_result)
     print(f"Creating problem with {len(students)} Students with {sum(max_places)} places.")
-    return Problem(services, max_places, students, student_preferences, getStrongConstraints(), getWeakConstraints(), old_result)
+    return ServiceAffectationProblem(services, max_places, students, student_preferences, getStrongConstraints(), getWeakConstraints(), old_result)
 
 if __name__ == "__main__":
     print(parse("input.csv").write())

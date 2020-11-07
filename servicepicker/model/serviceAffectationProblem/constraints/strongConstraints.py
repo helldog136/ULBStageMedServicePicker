@@ -1,4 +1,19 @@
-from servicepicker.problem.constraint import strongConstraint, StrongConstraint
+from typing import List
+
+from servicepicker.model.constraint import StrongConstraint
+
+_strongConstraints: List[StrongConstraint] = []
+
+
+def getStrongConstraints():
+    global _strongConstraints
+    return _strongConstraints
+
+
+def strongConstraint(const):
+    global _strongConstraints
+    _strongConstraints.append(const())
+
 
 ##########
 # constraint: StudentAffectedOnlyOnce
@@ -10,16 +25,19 @@ class StudentAffectedOnlyOnce(StrongConstraint):
     def computeConstraint(self, problem):
         # sum_i xij = M[j]
         res = []
-        for i in range(len(problem.Students)):
-            res.append([])
-        for i in range(len(problem.Students)):
-            for j in range(len(problem.Locations)):
-                res[i].append((1, problem.prettyPrintVar("x", i, j)))
+        for s, student in enumerate(problem.Students):
+            const = None
+            for l, location in enumerate(problem.Locations):
+                if const is None:
+                    const = problem.decisionVariables[s][l]
+                else:
+                    const += problem.decisionVariables[s][l]
 
-        for i, resp in enumerate(res):
-            self.addTerm(resp, "=", 1)
+            const = (const == 1)
+            res.append((const, f"{student.name} affected only once"))
+        return res
 
-    def checkValidity(self, X, L, M, S, P): # not implemented, will crash
+    def checkValidity(self, problem, solution):  # not implemented, will crash
         res = True
         wrongs = []
         # for k in range(len(M)):
@@ -47,16 +65,19 @@ class NoMoreStudentThanPlaces(StrongConstraint):
     def computeConstraint(self, problem):
         # sum_i xij <= M[j]
         res = []
-        for j in range(len(problem.Max_Places)):
-            res.append([])
-        for j in range(len(problem.Locations)):
-            for i in range(len(problem.Students)):
-                res[j].append((1, problem.prettyPrintVar("x", i, j)))
+        for l, location in enumerate(problem.Locations):
+            const = None
+            for s, student in enumerate(problem.Students):
+                if const is None:
+                    const = problem.decisionVariables[s][l]
+                else:
+                    const += problem.decisionVariables[s][l]
 
-        for j, resp in enumerate(res):
-            self.addTerm(resp, "<=", problem.Max_Places[j])
+            const = (const <= location.maxAssignees)
+            res.append((const, f"no more than {location.maxAssignees} students at {location.name}"))
+        return res
 
-    def checkValidity(self, X, L, M, S, P):
+    def checkValidity(self, problem, solution):
         res = True
         wrongs = []
         # for k in range(len(M)):
@@ -73,26 +94,29 @@ class NoMoreStudentThanPlaces(StrongConstraint):
         #             wrongs.append((i, j, k, -1))
         return (res, wrongs)
 
+
 ##########
 # constraint: AtLeastOneStudentPerPlace
 # type: strong
 ##########
 
 @strongConstraint
-class AtLeastOneStudentPerPlace(StrongConstraint):
+class EnoughStudentPerPlace(StrongConstraint):
     def computeConstraint(self, problem):
-        # sum_i xij >= 1
         res = []
-        for j in range(len(problem.Max_Places)):
-            res.append([])
-        for j in range(len(problem.Locations)):
-            for i in range(len(problem.Students)):
-                res[j].append((1, problem.prettyPrintVar("x", i, j)))
+        for l, location in enumerate(problem.Locations):
+            const = None
+            for s, student in enumerate(problem.Students):
+                if const is None:
+                    const = problem.decisionVariables[s][l]
+                else:
+                    const += problem.decisionVariables[s][l]
 
-        for j, resp in enumerate(res):
-            self.addTerm(resp, ">=", 1)
+            const = (const >= location.minAssignees)
+            res.append((const, f"at least {location.minAssignees} students at {location.name}"))
+        return res
 
-    def checkValidity(self, X, L, M, S, P):
+    def checkValidity(self, problem, solution):
         res = True
         wrongs = []
         # for k in range(len(M)):
@@ -118,17 +142,21 @@ class AtLeastOneStudentPerPlace(StrongConstraint):
 @strongConstraint
 class AccountVetos(StrongConstraint):
     def computeConstraint(self, problem):
-        # sum_i xij >= 1
         res = []
-        for j in range(len(problem.Locations)):
-            for i in range(len(problem.Students)):
-                if problem.Preferences[i][j] == "X":
-                    res.append([(1, problem.prettyPrintVar("x", i, j))])
+        for s, student in enumerate(problem.Students):
+            const = None
+            for l, location in enumerate(problem.Locations):
+                if student.hasVeto(location.id):
+                    if const is None:
+                        const = problem.decisionVariables[s][l]
+                    else:
+                        const += problem.decisionVariables[s][l]
+            if const is not None:
+                const = (const == 0)
+                res.append((const, f"{student.name} vetos"))
+        return res
 
-        for i, resp in enumerate(res):
-            self.addTerm(resp, "=", 0)
-
-    def checkValidity(self, X, L, M, S, P):
+    def checkValidity(self, problem, solution):
         res = True
         wrongs = []
         # for k in range(len(M)):

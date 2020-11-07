@@ -1,39 +1,5 @@
-from . import Problem
-from abc import ABCMeta, abstractclassmethod
 
-strongConstraints = None
-weakConstraints = None
-
-def clearConstraints():
-    global strongConstraints
-    global weakConstraints
-    strongConstraints = None
-    weakConstraints = None
-
-def getStrongConstraints():
-    global strongConstraints
-    return strongConstraints
-
-
-def strongConstraint(const):
-    global strongConstraints
-    if strongConstraints is None:
-        strongConstraints = const()
-    else:
-        strongConstraints.addConstraint(const())
-
-
-def getWeakConstraints():
-    global weakConstraints
-    return weakConstraints
-
-
-def weakConstraint(const):
-    global weakConstraints
-    if weakConstraints is None:
-        weakConstraints = const()
-    else:
-        weakConstraints.addConstraint(const())
+from abc import ABCMeta, abstractclassmethod, abstractmethod
 
 
 class Constraint(metaclass=ABCMeta):
@@ -65,16 +31,18 @@ class Constraint(metaclass=ABCMeta):
             self.nextConstraint.getConstraints(problem, ret)
         return ret
 
-    @abstractclassmethod
+    @classmethod
+    @abstractmethod
     def computeConstraint(self, problem):
         """
-        used to call a computation of all the coefficients and variables to build the constraint on the specific problem
-        :param problem: the problem to build the constraint
-        :return: nothing but the constraint has been updated to match the given problem
+        used to call a computation of all the coefficients and variables to build the constraint on the specific model
+        :param problem: the model to build the constraint
+        :return: nothing but the constraint has been updated to match the given model
         """
         pass
 
-    @abstractclassmethod
+    @classmethod
+    @abstractmethod
     def getConstraint(self, problem):
         """
         :return: the string representing the constraint 
@@ -92,22 +60,26 @@ class WeakConstraint(Constraint, metaclass=ABCMeta):
         self.coefficients.append(coefficient)
         self.variables.append(variable)
 
-    @abstractclassmethod
+    @classmethod
+    @abstractmethod
     def computeConstraint(self, problem):
         pass
 
-    @abstractclassmethod
+    @classmethod
+    @abstractmethod
     def getMaxValue(self, problem):
         return 0
 
-    @abstractclassmethod
+    @classmethod
+    @abstractmethod
     def getMinValue(self, problem):
         return 0
 
     def getConstraint(self, problem):
         def printInt(i):
             return "+" + ((" " + str(i)) if i != 1 else "") if i >= 0 else "-" + (
-            (" " + str(abs(i))) if i != -1 else "")
+                (" " + str(abs(i))) if i != -1 else "")
+
         if len(self.coefficients) > 0 and len(self.coefficients) == len(self.variables):
             self.normalize(problem)
             weight = self.getWeight()
@@ -134,12 +106,13 @@ class WeakConstraint(Constraint, metaclass=ABCMeta):
         for i in range(len(self.coefficients)):
             self.coefficients[i] = modifer(self.coefficients[i])
 
-    @abstractclassmethod
+    @classmethod
+    @abstractmethod
     def getWeight(self):
         pass
 
 
-class StrongConstraint(Constraint, metaclass=ABCMeta): #TODO unifinished
+class StrongConstraint(Constraint, metaclass=ABCMeta):  # TODO unifinished
     def __init__(self):
         super(StrongConstraint, self).__init__()
         self.lhss = []
@@ -148,15 +121,19 @@ class StrongConstraint(Constraint, metaclass=ABCMeta): #TODO unifinished
     def addTerm(self, lhs, sign, rhs):
         def mergeLhs(l):
             def printInt(i):
-                return "+" + ((" " + str(i)) if i != 1 else "") if i >= 0 else "-"+((" " + str(abs(i))) if i != -1 else "")
+                return "+" + ((" " + str(i)) if i != 1 else "") if i >= 0 else "-" + (
+                    (" " + str(abs(i))) if i != -1 else "")
+
             res = ""
             for i in l:
                 res += printInt(i[0]) + " " + i[1] + " "
             return res[1:-1] if res[0] == "+" else res[:-1]
+
         self.lhss.append(mergeLhs(lhs))
         self.results.append((sign, rhs))
 
-    @abstractclassmethod
+    @classmethod
+    @abstractmethod
     def computeConstraint(self, problem):
         pass
 
@@ -186,6 +163,7 @@ class StrongConstraint(Constraint, metaclass=ABCMeta): #TODO unifinished
             self.nextConstraint.checkValidities(X, L, M, S, P, ret)
         return ret
 
-    @abstractclassmethod
-    def checkValidity(self, X, L, M, S, P):
+    @classmethod
+    @abstractmethod
+    def checkValidity(self, problem, solution):
         return True, []
